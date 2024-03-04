@@ -46,11 +46,11 @@ module easel_bottom(size, hinge_size, hinge_offset, top_edge, bottom_edge) {
   difference() {
     plate(size = size, top_edge = top_edge, bottom_edge = bottom_edge);
     // top left hinge hole
-    translate([hinge_offset, size_y - hinge_y, - 2 * mm ]) 
-      cube(size = [hinge_x + 1 * mm, hinge_y + 1 * mm, 4 * mm], center = false);
+    translate([hinge_offset, size_y - hinge_y])
+      square(size = [hinge_x + 1 * mm, hinge_y + 1 * mm], center = false);
     // top right hinge hinge hole
-    translate([size_x - hinge_offset - hinge_x, size_y - hinge_y, - 2 * mm ]) 
-      cube(size = [hinge_x + 1 * mm, hinge_y + 1 * mm, 4 * mm], center = false);
+    translate([size_x - hinge_offset - hinge_x, size_y - hinge_y]) 
+      square(size = [hinge_x + 1 * mm, hinge_y + 1 * mm], center = false);
   }
 }
 
