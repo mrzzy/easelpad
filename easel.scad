@@ -27,7 +27,7 @@ module plate(size, top_edge, bottom_edge, border_radius = 10 * mm) {
     // cutout for divider storage
     divider_x = 80 * mm;
     divider_y = 10 * mm;
-    translate([size_x / 2 - divider_x / 2 ,size_y - divider_y]) square(size = [divider_x, divider_y]);
+    translate([size_x / 2 - divider_x / 2 ,size_y - divider_y]) square(size = [divider_x, divider_y + 1 * mm]);
   }
 }
 
