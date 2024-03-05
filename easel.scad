@@ -4,6 +4,7 @@
  */
 
 include <mcad/units.scad>;
+include <mcad/materials.scad>;
 
 /* Draw the easel plate shape
  * size: Dimensions of easel plate as 3D vector [x, y, z]
@@ -207,5 +208,4 @@ module easel() {
     size = [size_x, support_y, size_z], tnut_diameter = tnut_diameter, tnut_offset_y = tnut_offset_y);
 }
 
-// project 3D easel model onto 2D space
-projection(cut = false) easel();
+color(c = Pine) easel();
