@@ -207,4 +207,5 @@ module easel() {
     size = [size_x, support_y, size_z], tnut_diameter = tnut_diameter, tnut_offset_y = tnut_offset_y);
 }
 
-easel();
+// project 3D easel model onto 2D space
+projection(cut = false) easel();
