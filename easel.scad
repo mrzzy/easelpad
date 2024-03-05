@@ -99,7 +99,7 @@ module tnut_hole(plate_size, tnut_diameter, tnut_offset_y) {
 }
 
 // Easel Top
-module easel_top(size, magnet_offset = [20 * mm, 40 * mm], divider_offset_y = 12 * mm) {
+module easel_top(size, magnet_offset, magnet_z, magnet_diameter, divider_offset_y = 12 * mm) {
   size_x = size[0];
   size_y = size[1];
   size_z = size[2];
@@ -112,30 +112,29 @@ module easel_top(size, magnet_offset = [20 * mm, 40 * mm], divider_offset_y = 12
     easel_plate(size = size);
     // magnet holes
     // magnets for holding drawing board
-    offset_z = -(size_z / 2 - 1) * mm;
-    translate([magnet_offset_x, magnet_gap_y, offset_z])
+    translate([magnet_offset_x, magnet_gap_y, 0])
       magnet_holes(
         size = [
           size_x - 2 * magnet_offset_x, 
           size_y - magnet_gap_y - magnet_offset_y,
-          size_z + 1 * mm
+          magnet_z,
         ],
         rows = 2,
         cols = 2,
-        diameter = 8 * mm
+        diameter = magnet_diameter
       );
 
     // magnet for attaching
-    translate([magnet_offset_x, magnet_gap_y + divider_offset_y, offset_z])
+    translate([magnet_offset_x, magnet_gap_y + divider_offset_y, 0])
       magnet_holes(
         size = [
           size_x - 2 * magnet_offset_x, 
           size_y - magnet_gap_y - magnet_offset_y,
-          size_z + 1 * mm
+          magnet_z,
         ],
         rows = 3,
         cols = 4,
-        diameter = 8 * mm,
+        diameter = magnet_diameter,
         skip = [0, 1, 2, 3, 4, 5, 6, 7, 8, 11]
       );
   }
@@ -148,7 +147,7 @@ module hinge_support_top(size) {
 
 
 // Easel Bottom
-module easel_bottom(size, tnut_diameter, tnut_offset_y, magnet_offset = [20 * mm, 40 * mm]) {
+module easel_bottom(size, tnut_diameter, tnut_offset_y, magnet_offset, magnet_z, magnet_diameter) {
   size_x = size[0];
   size_y = size[1];
   size_z = size[2];
@@ -160,16 +159,16 @@ module easel_bottom(size, tnut_diameter, tnut_offset_y, magnet_offset = [20 * mm
   difference() {
     easel_plate(size = size);
     // magnet holes
-    translate([magnet_offset_x, magnet_gap_y, -(size_z / 2 - 1) * mm])
+    translate([magnet_offset_x, magnet_gap_y, 0])
       magnet_holes(
         size = [
           size_x - 2 * magnet_offset_x, 
           size_y - magnet_gap_y - magnet_offset_y,
-          size_z + 1 * mm
+          magnet_z,
         ],
         rows = 3,
         cols = 4,
-        diameter = 8 * mm
+        diameter = 8 *mm
       );
     // tnut hole
     tnut_hole(plate_size = size, tnut_diameter = tnut_diameter, tnut_offset_y = tnut_offset_y);
@@ -187,22 +186,35 @@ module hinge_support_bottom(size, tnut_diameter, tnut_offset_y) {
 
 
 module easel() {
+  // dimensions of the easel
   size_x = 280 * mm;
   size_y = 200 * mm;
   size_z = 5 * mm;
   size = [ size_x, size_y, size_z];
+ 
+  // length of the hinge support plate
+  support_y = 0.2 * size_y;
+
+  // dimensions of the tnut hole
   tnut_diameter = 8 * mm;
   tnut_offset_y = 30 * mm;
-  support_y = 0.2 * size_y;
-  
+
+  // dimensions of the magnet holes
+  magnet_offset = [20 * mm, 40 * mm];
+  magnet_diameter = 8 * mm;
+  magnet_z = 3 * mm;
+
   // top
   translate([size_x + 0.1 * mm, 0, 0]) 
-    easel_top(size = size);
+    easel_top(size = size, 
+    magnet_offset = magnet_offset, magnet_z = magnet_z, magnet_diameter = magnet_diameter);
   translate([size_x + 0.1 * mm, size_y + 0.1 * mm, 0]) 
     hinge_support_top(size = [size_x, support_y, size_z]);
   
   // bottom
-  easel_bottom(size = size, tnut_diameter = tnut_diameter, tnut_offset_y = tnut_offset_y);
+  easel_bottom(
+    size = size, tnut_diameter = tnut_diameter, tnut_offset_y = tnut_offset_y,  
+    magnet_offset = magnet_offset, magnet_z = magnet_z, magnet_diameter = magnet_diameter);
   translate([0, size_y + 0.1 * mm, 0]) 
     hinge_support_bottom(
     size = [size_x, support_y, size_z], tnut_diameter = tnut_diameter, tnut_offset_y = tnut_offset_y);
