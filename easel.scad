@@ -9,7 +9,7 @@ include <mcad/units.scad>;
  * size: Dimensions of easel plate as 3D vector [x, y, z]
  * border_radius: Radius of rounded corners
  */
-module plate(size, border_radius = 10 * mm) {
+module plate(size, border_radius = 8 * mm) {
   size_x = size[0];
   size_y = size[1];
   size_z = size[2];
@@ -79,6 +79,28 @@ module magnet_holes(size, rows=4, cols = 3, diameter = 8 * mm) {
   }
 }
 
+/* Draw a hole for seating a M6 T-nut for an easel plate of given size
+ * size: Dimensions of easel plate as 3D vector [x, y, z]
+ * tnut_diameter: Diameter of the T-nut hole.
+ * tnut_offset_y: Offset from the top of the easel plate to place the hole.
+*/
+module tnut_hole(plate_size, tnut_diameter, tnut_offset_y) {
+  size_x = plate_size[0];
+  size_y = plate_size[1];
+  size_z = plate_size[2];
+
+  translate(v = [size_x / 2, size_y - tnut_offset_y, size_z / 2])
+    cylinder(h = size_z + 1 * mm, r = tnut_diameter / 2, center = true);
+}
+
+module hinge_support_bottom(size, tnut_diameter, tnut_offset_y) {
+  difference() {
+    plate(size = size);
+    // tnut hole
+    tnut_hole(plate_size = size, tnut_diameter = tnut_diameter, tnut_offset_y = tnut_offset_y);
+  }
+}
+
 module easel_bottom(size, tnut_diameter, tnut_offset_y, magnet_offset = [20 * mm, 50 * mm]) {
   size_x = size[0];
   size_y = size[1];
@@ -103,16 +125,22 @@ module easel_bottom(size, tnut_diameter, tnut_offset_y, magnet_offset = [20 * mm
         diameter = 8 * mm
       );
     // tnut hole
-    translate(v = [size_x / 2, size_y - tnut_offset_y, size_z / 2]) 
-      cylinder(h = size_z + 1 * mm, r = tnut_diameter / 2, center = true);
+    tnut_hole(plate_size = size, tnut_diameter = tnut_diameter, tnut_offset_y = tnut_offset_y);
   }
 }
 
 module easel() {
-  size = [ 280 * mm, 200 * mm, 5 * mm ];
+  size_x = 280 * mm;
+  size_y = 200 * mm;
+  size_z = 5 * mm;
+  size = [ size_x, size_y, size_z];
   tnut_diameter = 8 * mm;
   tnut_offset_y = 30 * mm;
+
   easel_bottom(size = size, tnut_diameter = tnut_diameter, tnut_offset_y = tnut_offset_y);
+  
+  translate([0, size_y + 0.1 * mm, 0]) 
+    hinge_support_bottom(size = [size_x, size_y * 0.20, size_z], tnut_diameter = tnut_diameter, tnut_offset_y = tnut_offset_y);
 }
 
 easel();
