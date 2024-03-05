@@ -79,33 +79,40 @@ module magnet_holes(size, rows=4, cols = 3, diameter = 8 * mm) {
   }
 }
 
-module easel_bottom(size, magnet_offset = [20 * mm, 20 * mm]) {
+module easel_bottom(size, tnut_diameter, tnut_offset_y, magnet_offset = [20 * mm, 50 * mm]) {
   size_x = size[0];
   size_y = size[1];
   size_z = size[2];
   magnet_offset_x = magnet_offset[0];
   magnet_offset_y = magnet_offset[1];
-
+  // gap between last magnet hole and end of easel plate
+  magnet_gap_y = 20 * mm;
 
   difference() {
     easel_plate(size = size);
-    translate([magnet_offset_x, magnet_offset_y, -(size_z / 2 - 1) * mm])
+    // magnet holes
+    translate([magnet_offset_x, magnet_gap_y, -(size_z / 2 - 1) * mm])
       magnet_holes(
         size = [
           size_x - 2 * magnet_offset_x, 
-          size_y - magnet_offset_y - 50 * mm, 
+          size_y - magnet_gap_y - magnet_offset_y,
           size_z + 1 * mm
         ],
         rows = 4,
         cols = 3,
         diameter = 8 * mm
       );
+    // tnut hole
+    translate(v = [size_x / 2, size_y - tnut_offset_y, size_z / 2]) 
+      cylinder(h = size_z + 1 * mm, r = tnut_diameter / 2, center = true);
   }
 }
 
 module easel() {
   size = [ 280 * mm, 200 * mm, 5 * mm ];
-  easel_bottom(size = size);
+  tnut_diameter = 8 * mm;
+  tnut_offset_y = 30 * mm;
+  easel_bottom(size = size, tnut_diameter = tnut_diameter, tnut_offset_y = tnut_offset_y);
 }
 
 easel();
