@@ -200,7 +200,7 @@ module easel_top(size, magnet_offset, magnet_shape, label, label_gap, divider_of
   // decorative text label
   translate(v = [label_gap + 8 * mm, 48 * mm + label_gap, 0])
     rotate(a = [180, 0, -45])
-    text(text = label, font = "Abril Fatface:style=Regular");
+    #text(text = label, font = "Abril Fatface:style=Regular");
 }
 
 module hinge_support_top(size, hinge_size, hinge_offset, screw_offset, screw_diameter) {
@@ -242,7 +242,7 @@ module easel_bottom(size, tnut_diameter, tnut_offset_y, magnet_offset, magnet_sh
   // decorative text label
   translate(v = [size_x - 40 * mm - label_gap, label_gap, size_z]) 
     rotate(a = 45)
-    text(text = label, font = "Abril Fatface:style=Regular");
+    #text(text = label, font = "Abril Fatface:style=Regular");
 }
   
 
