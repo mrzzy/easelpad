@@ -36,7 +36,7 @@ module plate(size, border_radius = 8 * mm) {
  * hinge_size: dimensions of the hinge.
  * hinge_offset: offset from the sides of the plate to position hinge holes.
 */
-module easel_plate(size, hinge_size = [ 65 * mm, 20 * mm ], hinge_offset = 20 * mm) {
+module easel_plate(size,  hinge_size = [ 65 * mm, 20 * mm ], hinge_offset = 20 * mm) {
   size_x = size[0];
   size_y = size[1];
   size_z = size[2];
@@ -154,7 +154,7 @@ module hinge_support(size, hinge_size, hinge_offset, screw_offset, screw_diamete
 
 
 // Easel Top
-module easel_top(size, magnet_offset, magnet_shape, divider_offset_y = 12 * mm) {
+module easel_top(size, magnet_offset, magnet_shape, label, label_gap, divider_offset_y = 12 * mm) {
   size_x = size[0];
   size_y = size[1];
   size_z = size[2];
@@ -196,6 +196,11 @@ module easel_top(size, magnet_offset, magnet_shape, divider_offset_y = 12 * mm) 
         skip = [0, 1, 2, 3, 4, 5, 6, 7, 8, 11]
       );
   }
+
+  // decorative text label
+  translate(v = [label_gap + 8 * mm, 48 * mm + label_gap, 0])
+    rotate(a = [180, 0, -45])
+    text(text = label, font = "Abril Fatface:style=Regular");
 }
 
 module hinge_support_top(size, hinge_size, hinge_offset, screw_offset, screw_diameter) {
@@ -204,7 +209,7 @@ module hinge_support_top(size, hinge_size, hinge_offset, screw_offset, screw_dia
 }
 
 // Easel Bottom
-module easel_bottom(size, tnut_diameter, tnut_offset_y, magnet_offset, magnet_shape) {
+module easel_bottom(size, tnut_diameter, tnut_offset_y, magnet_offset, magnet_shape, label, label_gap) {
   size_x = size[0];
   size_y = size[1];
   size_z = size[2];
@@ -233,6 +238,11 @@ module easel_bottom(size, tnut_diameter, tnut_offset_y, magnet_offset, magnet_sh
     // tnut hole
     tnut_hole(plate_size = size, diameter = tnut_diameter, offset_y = tnut_offset_y);
   }
+
+  // decorative text label
+  translate(v = [size_x - 40 * mm - label_gap, label_gap, size_z]) 
+    rotate(a = 45)
+    text(text = label, font = "Abril Fatface:style=Regular");
 }
   
 
@@ -269,19 +279,23 @@ module easel(magnet_z = 3 * mm) {
   screw_offset = [8.5 * mm, 8 * mm ];
   // #8 screw: 1/8 inch pilot hole
   screw_diameter = 1/8 * inch;
+  
+  // decorative label
+  label = "PleinPad";
+  label_gap = 8 * mm;
 
   // top
   translate([size_x + 0.1 * mm, 0, 0]) 
-    easel_top(size = size, magnet_offset = magnet_offset, magnet_shape = magnet_shape);
+    easel_top(size = size, magnet_offset = magnet_offset, magnet_shape = magnet_shape, 
+    label = label, label_gap=label_gap);
   translate([size_x + 0.1 * mm, size_y + 0.1 * mm, 0]) 
     hinge_support_top(size = [size_x, support_y, size_z], 
     hinge_size = hinge_size, hinge_offset = hinge_offset, 
     screw_offset = screw_offset, screw_diameter = screw_diameter);
   
   // bottom
-  easel_bottom(
-    size = size, tnut_diameter = tnut_diameter, tnut_offset_y = tnut_offset_y,  
-    magnet_offset = magnet_offset, magnet_shape = magnet_shape);
+  easel_bottom(size = size, tnut_diameter = tnut_diameter, tnut_offset_y = tnut_offset_y,  
+    magnet_offset = magnet_offset, magnet_shape = magnet_shape, label=label, label_gap=label_gap);
   translate([0, size_y + 0.1 * mm, 0]) 
     hinge_support_bottom(size = [size_x, support_y, size_z], 
     tnut_diameter = tnut_diameter, tnut_offset_y = tnut_offset_y, 
