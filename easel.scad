@@ -259,7 +259,6 @@ module easel(magnet_z = 3 * mm) {
   // dimensions of the magnet holes
   magnet_offset = [20 * mm, 40 * mm];
   magnet_diameter = 8 * mm;
-  magnet_z = 3 * mm;
   magnet_shape = [magnet_diameter, magnet_z];
   // length of the hinge support plate
   support_y = 0.4 * size_y;
