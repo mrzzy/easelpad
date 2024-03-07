@@ -166,36 +166,11 @@ module easel_top(size, magnet_offset, magnet_shape, label, label_gap, divider_of
   // gap between last magnet hole and end of easel plate
   magnet_gap_y = 20 * mm;
 
-  difference() {
-    easel_plate(size = size);
-    // magnet holes
-    // magnets for holding drawing board
-    translate([magnet_offset_x, magnet_gap_y, 0])
-      magnet_holes(
-        size = [
-          size_x - 2 * magnet_offset_x, 
-          size_y - magnet_gap_y - magnet_offset_y,
-          magnet_z,
-        ],
-        rows = 2,
-        cols = 2,
-        diameter = magnet_diameter
-      );
-
-    // magnet for attaching
-    translate([magnet_offset_x, magnet_gap_y + divider_offset_y, 0])
-      magnet_holes(
-        size = [
-          size_x - 2 * magnet_offset_x, 
-          size_y - magnet_gap_y - magnet_offset_y,
-          magnet_z,
-        ],
-        rows = 3,
-        cols = 4,
-        diameter = magnet_diameter,
-        skip = [0, 1, 2, 3, 4, 5, 6, 7, 8, 11]
-      );
-  }
+   // decorative text label
+  translate(v = [52, 12, 0])
+    rotate(a = [180, 180, -45])
+    linear_extrude(height = 5)
+    #text(text = label, font = "Abril Fatface:style=Regular");
 
 }
 
@@ -284,19 +259,6 @@ module easel(magnet_z = 3 * mm) {
   translate([size_x + 0.1 * mm, 0, 0]) 
     easel_top(size = size, magnet_offset = magnet_offset, magnet_shape = magnet_shape, 
     label = label, label_gap=label_gap);
-  translate([size_x + 0.1 * mm, size_y + 0.1 * mm, 0]) 
-    hinge_support_top(size = [size_x, support_y, size_z], 
-    hinge_size = hinge_size, hinge_offset = hinge_offset, 
-    screw_offset = screw_offset, screw_diameter = screw_diameter);
-  
-  // bottom
-  easel_bottom(size = size, tnut_diameter = tnut_diameter, tnut_offset_y = tnut_offset_y,  
-    magnet_offset = magnet_offset, magnet_shape = magnet_shape, label=label, label_gap=label_gap);
-  translate([0, size_y + 0.1 * mm, 0]) 
-    hinge_support_bottom(size = [size_x, support_y, size_z], 
-    tnut_diameter = tnut_diameter, tnut_offset_y = tnut_offset_y, 
-    hinge_size = hinge_size, hinge_offset = hinge_offset, 
-    screw_offset = screw_offset, screw_diameter = screw_diameter);
 }
 
 projection() easel(magnet_z = 8 * mm);
