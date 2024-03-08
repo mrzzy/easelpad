@@ -23,7 +23,7 @@ module plate(size, border_radius = 8 * mm) {
         offset(r=border_radius) 
         square([size_x - 2 * border_radius, size_y - 2* border_radius]);
       
-      // cutout for divider storage
+      // cutout
       divider_x = 80 * mm;
       divider_y = 12 * mm;
       translate([size_x / 2 - divider_x / 2 ,size_y - divider_y]) 
@@ -198,8 +198,8 @@ module easel_top(size, magnet_offset, magnet_shape, label, label_gap, divider_of
   }
 
   // decorative text label
-  translate(v = [label_gap + 8 * mm, 48 * mm + label_gap, 0])
-    rotate(a = [180, 0, -45])
+  translate(v = [size_x - label_gap - 40 * mm - label_gap, 8 * mm + label_gap, 0])
+    rotate(a = [180, 0, 45])
     #text(text = label, font = "Abril Fatface:style=Regular");
 }
 
